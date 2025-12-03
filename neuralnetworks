@@ -1,0 +1,23 @@
+import numpy as np
+def relu(x):
+ return np.maximum(0, x)
+def sigmoid(x):
+ return 1 / (1 + np.exp(-x))
+x = np.array([1, 0, 1])
+weights_hidden = np.array([
+ [0.5, -0.2, 0.3], 
+ [0.4, 0.1, -0.5] 
+])
+bias_hidden = np.array([0, 0])
+z_hidden = np.dot(weights_hidden, x) + bias_hidden
+h = relu(z_hidden)
+print("Hidden layer output:", h)
+weights_output = np.array([0.7, 0.2]) # from H1 and H2
+bias_output = 0 # assume 0
+z_output = np.dot(weights_output, h) + bias_output
+output = sigmoid(z_output)
+print("Output after sigmoid:", output)
+if output > 0.5:
+ print("Result: SPAM")
+else:
+ print("Result: NOT SPAM")
