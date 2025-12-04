@@ -1,0 +1,24 @@
+import tensorflow as tf
+
+def relu(x): return tf.nn.relu(x)
+def sigmoid(x): return tf.nn.sigmoid(x)
+
+x = tf.constant([1.0, 0.0, 1.0])
+
+weights_hidden = tf.constant([[0.5, -0.2, 0.3],
+                              [0.4,  0.1, -0.5]], tf.float32)
+bias_hidden = tf.constant([0.0, 0.0])
+
+z_hidden = tf.matmul(weights_hidden, tf.reshape(x, (-1,1))) + tf.reshape(bias_hidden, (-1,1))
+h = relu(tf.reshape(z_hidden, (-1,)))
+print("Hidden layer output:", h.numpy())
+
+weights_output = tf.constant([0.7, 0.2], tf.float32)
+z_output = tf.tensordot(weights_output, h, axes=1)
+output = sigmoid(z_output)
+print("Output after sigmoid:", output.numpy())
+
+print("Result:", "SPAM" if output.numpy() > 0.5 else "NOT SPAM")
+
+
+tensorflow ki ee code okay na?
