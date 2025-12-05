@@ -1,0 +1,47 @@
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.datasets import mnist
+
+# 1. Load the MNIST dataset
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# 2. Preprocessing
+# Convert from 0–255 to 0–1 (normalize)
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0
+
+# Flatten 28x28 images to 784 vector
+x_train = x_train.reshape(-1, 28 * 28)
+x_test = x_test.reshape(-1, 28 * 28)
+
+# 3. Build the Neural Network model
+model = models.Sequential([
+    layers.Dense(128, activation="relu", input_shape=(784,)),  # hidden layer
+    layers.Dense(64, activation="relu"),                       # hidden layer 2
+    layers.Dense(10, activation="softmax")                     # output layer (10 digits)
+])
+
+# 4. Compile the model
+model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)
+
+# 5. Train the model
+model.fit(x_train, y_train, epochs=5, batch_size=32, validation_split=0.1)
+
+# 6. Evaluate on test data
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=0)
+print("Test accuracy:", test_acc)
+
+# 7. Predict on a sample image
+import numpy as np
+
+sample = x_test[0:1]          # take first test image
+true_label = y_test[0]
+pred_probs = model.predict(sample)
+pred_label = np.argmax(pred_probs[0])
+
+print("True label:", true_label)
+print("Predicted label:", pred_label)
