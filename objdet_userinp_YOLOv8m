@@ -1,0 +1,36 @@
+from ultralytics import YOLO
+import matplotlib.pyplot as plt
+from PIL import Image
+
+# 1. Load a larger, more accurate model
+# 'n' = nano, 's' = small, 'm' = medium, 'l' = large, 'x' = extra large (most accurate)
+# Start with 'yolov8m.pt'; if you have a good GPU, try 'yolov8l.pt' or 'yolov8x.pt'
+model = YOLO("yolov8m.pt")
+
+# 2. Ask for local image path
+img_path = input("Enter local image path (e.g. /content/2.webp): ").strip()
+
+# 3. Load image
+img = Image.open(img_path).convert("RGB")
+
+# 4. Run detection with stricter settings
+results = model(
+    img,
+    conf=0.5,   # increase confidence threshold (default is 0.25)
+    iou=0.5,    # IoU threshold 
+    imgsz=960   # higher resolution for better detection (default is 640)
+)[0]
+
+# 5. Plot annotated image
+annotated = results.plot()[:, :, ::-1]  # BGR → RGB
+
+plt.figure(figsize=(8, 6))
+plt.imshow(annotated)
+plt.axis("off")
+plt.title("YOLOv8 Object Detection ")
+plt.show()
+
+# 6. Print detected classes with confidence
+print("\nDetected objects (filtered by conf >= 0.5):")
+for cls, conf in zip(results.boxes.cls, results.boxes.conf):
+    print(f"- {model.names[int(cls)]} ({float(conf):.2f})")
